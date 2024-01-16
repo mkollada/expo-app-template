@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Audio Player with Clip Selection and Looping</title>
+</head>
+<body>
+    <audio id="player" controls></audio>
+    <br>
+    <label for="clipSlider">Select Clip:</label>
+    <input type="range" id="clipStart" min="0" max="100" value="0" oninput="updateClip()">
+    <input type="range" id="clipEnd" min="0" max="100" value="100" oninput="updateClip()">
+    <span id="clipDisplay">0s - 100s</span>
+    <br>
+    <label for="loopCheckbox">Loop Clip:</label>
+    <input type="checkbox" id="loopCheckbox" onchange="toggleLoop()">
+
+    <script>
+        const audioPlayer = document.getElementById('player');
+        const clipStart = document.getElementById('clipStart');
+        const clipEnd = document.getElementById('clipEnd');
+        const clipDisplay = document.getElementById('clipDisplay');
+        const loopCheckbox = document.getElementById('loopCheckbox');
+        let duration = 0;
+        let isLooping = false;
+
+        audioPlayer.onloadedmetadata = () => {
+            duration = audioPlayer.duration;
+            clipStart.max = duration;
+            clipEnd.max = duration;
+            clipEnd.value = duration;
+            updateClipDisplay();
+        };
+
+        // Function to update the clip display and set the playback range
+        function updateClip() {
+            const startValue = parseFloat(clipStart.value);
+            const endValue = parseFloat(clipEnd.value);
+            audioPlayer.currentTime = startValue;
+            updateClipDisplay();
+
+            // Listen for time update to control playback
+            audioPlayer.ontimeupdate = () => {
+                if (audioPlayer.currentTime >= endValue) {
+                    if (isLooping) {
+                        audioPlayer.currentTime = startValue;
+                    } else {
+                        audioPlayer.pause();
+                    }
+                }
+            };
+        }
+
+        // Function to toggle looping
+        function toggleLoop() {
+            isLooping = loopCheckbox.checked;
+        }
+
+        // Update clip display text
+        function updateClipDisplay() {
+            clipDisplay.textContent = clipStart.value + 's - ' + clipEnd.value + 's';
+        }
+
+        // Function to set up and play the audio
+        function playAudio(url) {
+            audioPlayer.src = url;
+            audioPlayer.play();
+        }
+    </script>
+</body>
+</html>
