@@ -4,6 +4,7 @@ import React from 'react'
 import EditScreenInfo from '../../components/EditScreenInfo'
 import { Text, View } from '../../components/Themed'
 import AudioProcessor from '../../components/AudioProcessorWebview'
+import AudioRecorderPlayer from '../../components/AudioRecorderPlayer'
 
 export default function TabOneScreen() {
     return (
@@ -14,7 +15,9 @@ export default function TabOneScreen() {
                 lightColor="#eee"
                 darkColor="rgba(255,255,255,0.1)"
             />
+            <AudioRecorderPlayer />
             <AudioProcessor />
+
             <EditScreenInfo path="app/(tabs)/index.tsx" />
         </View>
     )

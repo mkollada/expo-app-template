@@ -16,6 +16,14 @@
     <input type="checkbox" id="loopCheckbox" onchange="toggleLoop()">
 
     <script>
+        function logMessage(message) {
+            if (window.ReactNativeWebView && window.ReactNativeWebView.postMessage) {
+                window.ReactNativeWebView.postMessage(message);
+            } else {
+                console.log('ReactNativeWebView is not available');
+            }
+        }
+        
         const audioPlayer = document.getElementById('player');
         const clipStart = document.getElementById('clipStart');
         const clipEnd = document.getElementById('clipEnd');
@@ -32,12 +40,20 @@
             updateClipDisplay();
         };
 
+        function loadAudioFromBase64(base64String) {
+            const audioSrc = 'data:audio/mp3;base64,' + base64String
+            document.getElementById('player').src = audioSrc
+        }
+        
+
         // Function to update the clip display and set the playback range
         function updateClip() {
             const startValue = parseFloat(clipStart.value);
             const endValue = parseFloat(clipEnd.value);
             audioPlayer.currentTime = startValue;
             updateClipDisplay();
+
+            logMessage('got here')
 
             // Listen for time update to control playback
             audioPlayer.ontimeupdate = () => {
@@ -62,7 +78,8 @@
         }
 
         // Function to set up and play the audio
-        function playAudio(url) {
+        function playAudio(url, rate) {
+            logMessage(url)
             audioPlayer.src = url;
             audioPlayer.play();
         }
